@@ -26,8 +26,12 @@ Public Sub CountHeadingContentWords()
     Dim headingSelectionStart As Integer
     Dim headingSelectionEnd As Integer
     Dim currentHeading As String
+    Dim headingsForm As HeadingWordCountForm
     
     headingSelectionStart = -1
+    
+    Set headingsForm = New HeadingWordCountForm
+    headingsForm.Clear
     
     Do While findHeading.Found
     
@@ -36,7 +40,7 @@ Public Sub CountHeadingContentWords()
         Else
             headingSelectionEnd = headingRange.Start - 1
             
-            countWordsInRange headingSelectionStart, headingSelectionEnd
+            countWordsInRange headingSelectionStart, headingSelectionEnd, currentHeading, headingsForm
             
             headingSelectionStart = headingSelectionEnd + 1
         End If
@@ -48,15 +52,26 @@ Public Sub CountHeadingContentWords()
     
     headingSelectionEnd = ActiveDocument.Range.End
     If headingSelectionStart < ActiveDocument.Range.End Then
-        countWordsInRange headingSelectionStart, headingSelectionEnd
+        countWordsInRange headingSelectionStart, headingSelectionEnd, currentHeading, headingsForm
     End If
+    
+    headingsForm.Finalize
+    headingsForm.Show vbModal
+    
+    Unload headingsForm
+    Set headingsForm = Nothing
 End Sub
 
-Private Sub countWordsInRange(ByVal rangeStart As Integer, ByVal rangeEnd As Integer)
+Private Sub countWordsInRange( _
+                ByVal rangeStart As Integer, _
+                ByVal rangeEnd As Integer, _
+                ByVal currentHeading As String, _
+                ByVal headingsForm As HeadingWordCountForm _
+            )
     Dim countRange As Range
     Set countRange = ActiveDocument.Range(rangeStart, rangeEnd)
-    MsgBox "Heading: " & currentHeading & vbCrLf & _
+    headingsForm.Append "Heading: " & currentHeading & vbCrLf & vbCrLf & _
             "Word count: " & countRange.Words.Count & vbCrLf & _
-            "Accurate word count: " & countRange.ComputeStatistics(wdStatisticWords), _
-            , MACROTITLE
+            "Accurate word count: " & countRange.ComputeStatistics(wdStatisticWords) & vbCrLf & _
+            vbCrLf
 End Sub
