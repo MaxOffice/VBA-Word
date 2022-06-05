@@ -1,5 +1,10 @@
 Attribute VB_Name = "HeadingWordCountModule"
+'Version 0.0.3
+'Created by Raj Chaudhuri
+
 Option Explicit
+
+Public outputstr As String
 
 Private Const MACROTITLE = "Heading Word Count"
 
@@ -23,8 +28,8 @@ Public Sub CountHeadingContentWords()
         Exit Sub
     End If
     
-    Dim headingSelectionStart As Integer
-    Dim headingSelectionEnd As Integer
+    Dim headingSelectionStart As Long
+    Dim headingSelectionEnd As Long
     Dim currentHeading As String
     Dim headingsForm As HeadingWordCountForm
     
@@ -55,23 +60,38 @@ Public Sub CountHeadingContentWords()
         countWordsInRange headingSelectionStart, headingSelectionEnd, currentHeading, headingsForm
     End If
     
-    headingsForm.Finalize
+    headingsForm.Prepare
     headingsForm.Show vbModal
     
     Unload headingsForm
+    
     Set headingsForm = Nothing
 End Sub
 
 Private Sub countWordsInRange( _
-                ByVal rangeStart As Integer, _
-                ByVal rangeEnd As Integer, _
+                ByVal rangeStart As Long, _
+                ByVal rangeEnd As Long, _
                 ByVal currentHeading As String, _
                 ByVal headingsForm As HeadingWordCountForm _
             )
     Dim countRange As Range
     Set countRange = ActiveDocument.Range(rangeStart, rangeEnd)
-    headingsForm.Append "Heading: " & currentHeading & vbCrLf & vbCrLf & _
-            "Word count: " & countRange.Words.Count & vbCrLf & _
-            "Accurate word count: " & countRange.ComputeStatistics(wdStatisticWords) & vbCrLf & _
-            vbCrLf
+            
+    ' Info: Word count, Lines, Paragraphs, Characters, Pages - <Heading 1 Text>
+    Dim tempStr As String
+    
+    ' Full stats
+    ' tempStr = Replace(currentHeading, Chr(13), "") & vbTab & _
+        countRange.ComputeStatistics(wdStatisticWords) & vbTab & _
+        countRange.ComputeStatistics(wdStatisticParagraphs) & vbTab & _
+        countRange.ComputeStatistics(wdStatisticLines) & vbTab & _
+        countRange.ComputeStatistics(wdStatisticCharacters) & vbTab & _
+        countRange.ComputeStatistics(wdStatisticPages) & vbCrLf
+    
+    ' Only word count <Heading><tab><WordCount>
+    tempStr = Replace(currentHeading, Chr(13), "") & vbTab & _
+        countRange.ComputeStatistics(wdStatisticWords) & _
+        vbCrLf
+    
+    headingsForm.Append tempStr
 End Sub

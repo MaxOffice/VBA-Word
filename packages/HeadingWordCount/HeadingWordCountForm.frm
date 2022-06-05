@@ -1,10 +1,10 @@
 VERSION 5.00
 Begin {C62A69F0-16DC-11CE-9E98-00AA00574A4F} HeadingWordCountForm 
    Caption         =   "Heading Word Count"
-   ClientHeight    =   3490
+   ClientHeight    =   4970
    ClientLeft      =   110
    ClientTop       =   450
-   ClientWidth     =   5150
+   ClientWidth     =   8340.001
    OleObjectBlob   =   "HeadingWordCountForm.frx":0000
    StartUpPosition =   1  'CenterOwner
 End
@@ -31,7 +31,7 @@ Public Sub Append(ByVal data As String)
     headingsSummary = headingsSummary & data
 End Sub
 
-Public Sub Finalize()
+Public Sub Prepare()
     With txtHeadingWordCount
         .Text = headingsSummary
         .SelStart = 0
@@ -42,3 +42,5 @@ End Sub
 Public Sub Clear()
     headingsSummary = ""
 End Sub
+
+
