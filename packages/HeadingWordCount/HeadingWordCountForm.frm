@@ -44,3 +44,6 @@ Public Sub Clear()
 End Sub
 
 
+Private Sub Label1_Click()
+
+End Sub

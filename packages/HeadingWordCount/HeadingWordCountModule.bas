@@ -7,7 +7,9 @@ Option Explicit
 Public outputstr As String
 
 Private Const MACROTITLE = "Heading Word Count"
-
+Public Sub CountHeadingContentWordsAction(rb As IRibbonControl)
+    CountHeadingContentWords
+End Sub
 Public Sub CountHeadingContentWords()
     Dim headingRange As Range
     Set headingRange = ActiveDocument.Content
@@ -24,7 +26,7 @@ Public Sub CountHeadingContentWords()
     End With
     
     If Not findHeading.Found Then
-        MsgBox "Could not find a heading in this document.", vbExclamation, MACROTITLE
+        MsgBox "Could not find any paragraph with Heading1 style in this document.", vbExclamation, MACROTITLE
         Exit Sub
     End If
     
@@ -81,7 +83,7 @@ Private Sub countWordsInRange( _
     Dim tempStr As String
     
     ' Full stats
-    ' tempStr = Replace(currentHeading, Chr(13), "") & vbTab & _
+    tempStr = Replace(currentHeading, Chr(13), "") & vbTab & _
         countRange.ComputeStatistics(wdStatisticWords) & vbTab & _
         countRange.ComputeStatistics(wdStatisticParagraphs) & vbTab & _
         countRange.ComputeStatistics(wdStatisticLines) & vbTab & _
@@ -89,7 +91,7 @@ Private Sub countWordsInRange( _
         countRange.ComputeStatistics(wdStatisticPages) & vbCrLf
     
     ' Only word count <Heading><tab><WordCount>
-    tempStr = Replace(currentHeading, Chr(13), "") & vbTab & _
+    'tempStr = Replace(currentHeading, Chr(13), "") & vbTab & _
         countRange.ComputeStatistics(wdStatisticWords) & _
         vbCrLf
     
